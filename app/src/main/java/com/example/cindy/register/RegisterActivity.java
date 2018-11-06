@@ -234,19 +234,19 @@ public class RegisterActivity extends AppCompatActivity {
 ////                return;  哇 要被这个return给坑死了 ，就说为什么数据库一直创建不了，为什么调式到这一步就不往下走了，底下给数据库增加数据的代码就没执行
 ////                能有数据才鬼了  ，都是因为return,气死了！！! 我真是个猪。  return了就是返回上一步？就不往下走了？
 //           }
-                List<RegisterBean> list = LitePal.findAll(RegisterBean.class);
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getPhone().equals(editPhone.getText().toString())) {
-                        Toast.makeText(RegisterActivity.this, "手机号已经注册", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-                RegisterBean bean = new RegisterBean();
-                bean.setPhone(editPhone.getText().toString());
-                bean.setPassword(editPassword.getText().toString());
-                bean.save();  //创建RegisterBean数据表对象bean，将手机号和密码存储到数据表registerbean中
-                SharePreferenceUtil.getStringSP("currentphone", editPhone.getText().toString());
-                SharePreferenceUtil.getStringSP("currentpassword", editPassword.getText().toString());
+//                List<RegisterBean> list = LitePal.findAll(RegisterBean.class);
+//                for (int i = 0; i < list.size(); i++) {
+//                    if (list.get(i).getPhone().equals(editPhone.getText().toString())) {
+//                        Toast.makeText(RegisterActivity.this, "手机号已经注册", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//                }
+//                RegisterBean bean = new RegisterBean();
+//                bean.setPhone(editPhone.getText().toString());
+//                bean.setPassword(editPassword.getText().toString());
+//                bean.save();  //创建RegisterBean数据表对象bean，将手机号和密码存储到数据表registerbean中
+//                SharePreferenceUtil.getStringSP("currentphone", editPhone.getText().toString());
+//                SharePreferenceUtil.getStringSP("currentpassword", editPassword.getText().toString());
                 Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
 //               finish();  //原来问题在这，
                 break;
