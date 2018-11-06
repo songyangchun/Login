@@ -60,7 +60,7 @@
     <EditText
         android:id="@+id/password"
         android:layout_width="221dp"
-        android:layout_height="31dp"
+        android:layout_height="33dp"
         android:layout_marginEnd="48dp"
         android:layout_marginRight="48dp"
         android:layout_marginTop="108dp"
@@ -103,5 +103,14 @@
         android:text="注册"
         app:layout_constraintBaseline_toBaselineOf="@+id/remember_pass"
         app:layout_constraintEnd_toEndOf="@+id/btn_login" />
+
+    <ImageView
+        android:id="@+id/passwordeye"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        app:srcCompat="@drawable/eye_close_60"
+        tools:layout_editor_absoluteX="292dp"
+        tools:layout_editor_absoluteY="106dp"
+        tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>

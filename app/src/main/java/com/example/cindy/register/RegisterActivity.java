@@ -219,10 +219,6 @@ public class RegisterActivity extends AppCompatActivity {
                     editCode.requestFocus();
                     return;
                 }
-
-
-
-
 //
 //                if (TextUtil.isEmpty(editCode.getText().toString())){
 //                    Toast.makeText(RegisterActivity.this, "请输入验证码", Toast.LENGTH_SHORT).show();
@@ -251,7 +247,6 @@ public class RegisterActivity extends AppCompatActivity {
 //               finish();  //原来问题在这，
                 break;
             case R.id.btn_getcode:
-
                 if (!editPhone.getText().toString().trim().equals("")) {
                     if (checkTel(editPhone.getText().toString().trim())) {
                         SMSSDK.getVerificationCode("+86", editPhone.getText().toString());//获取验证码
