@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+<dbname value="adb"/>
+
+<list>
+    <mapping class="com.example.cindy.myapplication1.data.RegisterBean"/>
+</list>
+
+<version value="1"/>
+<storage value="adb/database" />
+<!-- 将数据库保存到SD卡，便于查看数据-->
+</litepal>
