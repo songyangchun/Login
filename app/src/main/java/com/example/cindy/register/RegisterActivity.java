@@ -68,10 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         verifyStoragePermissions(this);
         init();
-
-
         mTimeCount = new TimeCount(60000, 1000);
-
     }
 
 
@@ -98,28 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-//    /**
-//     * 初始化事件接收器
-//     */
-//    private void init() {
-//        eh = new EventHandler() {
-//            @Override
-//            public void afterEvent(int event, int result, Object data) {
-//                //坑：进入mob平台官网，进入后台，点击SMSSDK，进入短信设置，关闭是否开启Mob云验证，否则同一个手机号只能发送一次短信。
-//                if (result == SMSSDK.RESULT_COMPLETE) { //回调完成
-//                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) { //提交验证码成功
-//                      startActivity(new Intent(RegisterActivity.this, LoginActivity.class)); //页面跳转
-//                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) { //获取验证码成功
-//                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) { //返回支持发送验证码的国家列表
-//                    }
-//                } else {
-//
-//                   ((Throwable) data).printStackTrace();
-//                }
-//            }
-//        };
-//        SMSSDK.registerEventHandler(eh); //注册短信回调接口
-//    }
+
     /**
      * 初始化事件接收器
      */
@@ -147,7 +123,15 @@ public class RegisterActivity extends AppCompatActivity {
             if (result == SMSSDK.RESULT_COMPLETE) {
                 // 如果操作成功
                  if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) { // 校验验证码，返回校验的手机和国家代码
-                     Toast.makeText(RegisterActivity.this, "验证成功", Toast.LENGTH_SHORT).show();
+                     Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                     //将数据保存到数据库
+                     RegisterBean bean = new RegisterBean();
+                     bean.setPhone(editPhone.getText().toString());
+                     bean.setPassword(editPassword.getText().toString());
+                     bean.save();  //创建RegisterBean数据表对象bean，将手机号和密码存储到数据表registerbean中
+                     SharePreferenceUtil.setStringSP("currentphone", editPhone.getText().toString());
+                     SharePreferenceUtil.setStringSP("currentpassword", editPassword.getText().toString());
+
                      Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                      startActivity(intent);
                  } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) { // 获取验证码成功，true为智能验证，false为普通下发短信
@@ -190,10 +174,10 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (matchAccount(editPassword.getText().toString())) {
-                   Toast.makeText(RegisterActivity.this, "请输入6-18位数字字母下划线密码", Toast.LENGTH_SHORT).show();
-                   return;
-                } //密码太多测试时太麻烦
+//                if (!matchAccount(editPassword.getText().toString())) {
+//                   Toast.makeText(RegisterActivity.this, "请输入6-18位数字字母下划线密码", Toast.LENGTH_SHORT).show();
+//                   return;
+//                } //密码太多测试时太麻烦
 
                 if (TextUtil.isEmpty(editVerifypassword.getText().toString())) {
                     editCode.requestFocus();//把输入焦点放在该控件上
@@ -205,53 +189,30 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 if (!TextUtil.isEmpty(editCode.getText().toString())) {
-                    if (editCode.getText().length() == 4) {
                         SMSSDK.submitVerificationCode("+86", editPhone.getText().toString().trim(), editCode.getText().toString().trim());//提交验证
                         flag = false;
-                    } else {
-                        Toast.makeText(this, "请输入完整的验证码", Toast.LENGTH_SHORT).show();
-                        editCode.requestFocus();
-                        return;
-                    } } else {
+                } else {
                     Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
                     editCode.requestFocus();
-                    return;
+                    return;  //哇 要被这个return给坑死了 ，  return了就是返回上一步，就不往下走了，
                 }
-//
-//                if (TextUtil.isEmpty(editCode.getText().toString())){
-//                    Toast.makeText(RegisterActivity.this, "请输入验证码", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                if (!TextUtil.isEmpty(editCode.getText().toString())){
-//
-//                    SMSSDK.submitVerificationCode("+86", editPhone.getText().toString().trim(), editCode.getText().toString().trim());//提交验证
-////                return;  哇 要被这个return给坑死了 ，就说为什么数据库一直创建不了，为什么调式到这一步就不往下走了，底下给数据库增加数据的代码就没执行
-////                能有数据才鬼了  ，都是因为return,气死了！！! 我真是个猪。  return了就是返回上一步？就不往下走了？
-//           }
-                List<RegisterBean> list = LitePal.findAll(RegisterBean.class);
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getPhone().equals(editPhone.getText().toString())) {
-                        Toast.makeText(RegisterActivity.this, "手机号已经注册", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-                RegisterBean bean = new RegisterBean();
-                bean.setPhone(editPhone.getText().toString());
-                bean.setPassword(editPassword.getText().toString());
-                bean.save();  //创建RegisterBean数据表对象bean，将手机号和密码存储到数据表registerbean中
-                SharePreferenceUtil.getStringSP("currentphone", editPhone.getText().toString());
-                SharePreferenceUtil.getStringSP("currentpassword", editPassword.getText().toString());
-                Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-//               finish();  //原来问题在这，
-                break;
+               finish();  //原来问题在这，
+                 break;
             case R.id.btn_getcode:
+
                 if (!editPhone.getText().toString().trim().equals("")) {
                     if (checkTel(editPhone.getText().toString().trim())) {
-                        SMSSDK.getVerificationCode("+86", editPhone.getText().toString());//获取验证码
-                        editCode.requestFocus();//把输入焦点放在该控件上
-                        mTimeCount.start();
+                        //验证手机号在数据库中是否已经存在
+                        List<RegisterBean> list = LitePal.findAll(RegisterBean.class);
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).getPhone().equals(editPhone.getText().toString())) {
+                                Toast.makeText(RegisterActivity.this, "手机号已经注册", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                            SMSSDK.getVerificationCode("+86", editPhone.getText().toString());//获取验证
+                            mTimeCount.start();
                     } else {
                         Toast.makeText(RegisterActivity.this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
                         editPhone.requestFocus();
